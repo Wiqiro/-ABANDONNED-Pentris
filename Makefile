@@ -1,5 +1,6 @@
 #OBJS specifies which files to compile as part of the project
-OBJS = main.c map.c polyomino.c
+#OBJS = main.c map.c polyomino.c
+OBJS = src/main.c src/map.c src/polyomino.c src/graphics/renderer.c
 
 #CC specifies which compiler we're using
 CC = gcc

@@ -4,11 +4,12 @@
 #include <time.h>
 
 #include <SDL.h>
-#include <SDL_image.h>
 
 #include "structures.h"
 #include "polyomino.h"
 #include "map.h"
+#include "graphics/ui.h"
+#include "graphics/renderer.h"
 
 
 #include "testing.h"
@@ -16,6 +17,8 @@
 struct Keyboard {
    int S, Z, E, D, SPACE, LEFT, RIGHT;
 };
+
+
 
 int main(int argc, char* argv[]) {
 
@@ -25,21 +28,29 @@ int main(int argc, char* argv[]) {
    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
    SDL_Event event;
 
+   struct Coord offset = {525, 105};
+   int tile_size = 30;
+   int border_size = 4;
+   int outline_size = 2;
+
    srand(time(NULL));
 
    struct Keyboard keyboard = {0, 0, 0, 0, 0};
 
-   int w = 31, h = 31;
+   int w = 29, h = 29;
    bool game_over = false;
    int tick = 400;
 
    struct Map map = create_and_initialize_map(w, h);
-  // struct Polyomino poly_l = get_test_poly();
    struct Polyomino poly_r = get_test_poly();
+   FILE* file = fopen("ressources/polynomioes/4-ominoes", "r");
+   if (file != NULL) {
+      load_poly_from_file(file, &poly_r);
+   }
+   spawn_poly(&poly_r, map.size, RIGHT);
    
    clock_t timer = clock();
 
-//poly_rotation_cw(&poly);
    while (game_over == false) {
 
       while (SDL_PollEvent(&event) != 0) {
@@ -85,7 +96,7 @@ int main(int argc, char* argv[]) {
                break;
             case SDLK_SPACE:
                if (keyboard.SPACE == 0) {
-                  tick = 10;
+                  tick = 40;
                   keyboard.SPACE = 1;
                }
                break;
@@ -126,6 +137,7 @@ int main(int argc, char* argv[]) {
          if (polyomino_fall(&poly_r, map, LEFT) == false) {
             merge_poly(&map, poly_r);
             poly_r = get_test_poly();
+            load_poly_from_file(file, &poly_r);
          }
          timer = clock();
          int dist_detected = detect_square(&map);
@@ -135,9 +147,10 @@ int main(int argc, char* argv[]) {
             }
          }
       }
-      render_map(renderer, map);
-
-      render_poly(renderer, poly_r);
+      SDL_RenderClear(renderer);
+      render_background(renderer, map, offset, tile_size, outline_size);
+      render_map(renderer, map, tile_size, border_size, offset);
+      render_poly(renderer, poly_r, tile_size, border_size, offset);
 
 
       SDL_RenderPresent(renderer);

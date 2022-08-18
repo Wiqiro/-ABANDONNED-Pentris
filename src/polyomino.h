@@ -1,7 +1,8 @@
-#ifndef POLYOMINO_H
-#define POLYOMINO_H
+#pragma once
 
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 #include <stdbool.h>
 
 #include "structures.h"
@@ -13,9 +14,13 @@ enum Direction {
    RIGHT,
 };
 
-struct Polyomino create_and_generate_polyomino(int order);
+
+
+struct Polyomino create_polyomino();
 
 void generate_polyomino(struct Polyomino* poly);
+
+void load_poly_from_file(FILE* file, struct Polyomino* poly);
 
 bool polyomino_fall(struct Polyomino* poly, struct Map map, enum Direction dir);
 
@@ -27,5 +32,4 @@ void kill_polyomino(struct Polyomino* poly);
 
 bool collision_test(struct Polyomino poly, struct Map map);
 
-
-#endif
+void spawn_poly(struct Polyomino* poly, int map_size, enum Direction side);
