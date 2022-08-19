@@ -1,29 +1,60 @@
 #include "renderer.h"
 
-void render_background(SDL_Renderer* renderer, struct Map map, struct Coord offset, int tile_size, int outline) {
+
+void load_text(TTF_Font* font, SDL_Renderer* renderer, char* str, SDL_Color color, SDL_Rect rect) {
+   SDL_Surface* surface = TTF_RenderText_Blended(font, str, color);
+   if (font == NULL) {
+      printf("a");
+   }
+   SDL_Texture* texture = NULL;
+   if (surface != NULL) {
+      texture = SDL_CreateTextureFromSurface(renderer, surface);
+   }
+   SDL_FreeSurface(surface);
+   SDL_RenderCopy(renderer, texture, NULL, &rect);
+   SDL_DestroyTexture(texture);
+}
+
+void render_background(SDL_Renderer* renderer, TTF_Font* font, struct Map map, SDL_Rect container, int win_w, int win_h, int outline, int score) {
+
+   SDL_Color color = {0xFF, 0xFF, 0xFF, 0xFF};
+   SDL_Texture* text = NULL;
+   SDL_Rect rectangle;
+
+   SDL_SetRenderDrawColor(renderer, 0x27, 0x27, 0x2c, 0xFF);
+   SDL_RenderFillRect(renderer, &container);
+   rectangle = (SDL_Rect){container.x, 0, container.w, container.y};
+   SDL_RenderFillRect(renderer, &rectangle);
+
 
    SDL_SetRenderDrawColor(renderer, 0x18, 0x18, 0x18, 0xFF);
-   SDL_RenderFillRect(renderer, NULL);
+   rectangle = (SDL_Rect){0, 0, container.x, win_h};
+   SDL_RenderFillRect(renderer, &rectangle);
+   rectangle = (SDL_Rect){container.x + container.w, 0, container.x, win_h};
+   SDL_RenderFillRect(renderer, &rectangle);
 
-   SDL_Rect square = {offset.x, offset.y, map.size * tile_size, map.size * tile_size};
 
-   SDL_SetRenderDrawColor(renderer, 0x30, 0x30, 0x38, 0xFF);
-   SDL_RenderFillRect(renderer, &square);
-
-   SDL_Rect rectangle;
    SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-
-   rectangle = (SDL_Rect){square.x - outline, square.y - outline, outline, square.h + outline};
+   rectangle = (SDL_Rect){container.x, 0, outline, win_h};
+   SDL_RenderFillRect(renderer, &rectangle);
+   rectangle = (SDL_Rect){0, container.y - outline, win_w, outline};
+   SDL_RenderFillRect(renderer, &rectangle);
+   rectangle = (SDL_Rect){container.x + container.w, 0, outline, win_h};
    SDL_RenderFillRect(renderer, &rectangle);
 
-   rectangle = (SDL_Rect){square.x - outline, square.y - outline, square.h + outline, outline};
-   SDL_RenderFillRect(renderer, &rectangle);
+   rectangle = (SDL_Rect){container.x + 200, 0, container.w - 400, container.y - 50};
+   load_text(font, renderer, "PENTRIS", color, rectangle);
 
-   rectangle = (SDL_Rect){square.x + square.w, square.y - outline, outline, square.w + outline * 2};
-   SDL_RenderFillRect(renderer, &rectangle);
+   rectangle = (SDL_Rect){container.x + container.w - 180, container.y - 110, 80, 24};
+   load_text(font, renderer, "by Wiqiro", color, rectangle);
 
-   rectangle = (SDL_Rect){square.x - outline, square.y + square.h, square.h + outline, outline};
-   SDL_RenderFillRect(renderer, &rectangle);
+   char score_str[50];
+   sprintf(score_str, "SCORE: %d", score);
+   rectangle = (SDL_Rect){15, 0, 25 * strlen(score_str), 60};
+   load_text(font, renderer, score_str, color, rectangle);
+
+   SDL_DestroyTexture(text); 
+
 }
 
 

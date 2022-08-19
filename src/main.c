@@ -4,6 +4,7 @@
 #include <time.h>
 
 #include <SDL.h>
+#include <SDL_ttf.h>
 
 #include "structures.h"
 #include "polyomino.h"
@@ -22,16 +23,12 @@ struct Keyboard {
 
 int main(int argc, char* argv[]) {
 
-   SDL_Init(SDL_INIT_VIDEO);
-   SDL_Window* window = SDL_CreateWindow("Pentris", 0, 60, 1900, 1000, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-   SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
-   SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+   initialize_ui();
    SDL_Event event;
 
-   struct Coord offset = {525, 105};
-   int tile_size = 30;
-   int border_size = 4;
-   int outline_size = 2;
+   //TTF_Init();
+   /* TTF_Font* test = NULL;
+   TTF_CloseFont(test); */
 
    srand(time(NULL));
 
@@ -147,18 +144,10 @@ int main(int argc, char* argv[]) {
             }
          }
       }
-      SDL_RenderClear(renderer);
-      render_background(renderer, map, offset, tile_size, outline_size);
-      render_map(renderer, map, tile_size, border_size, offset);
-      render_poly(renderer, poly_r, tile_size, border_size, offset);
 
-
-      SDL_RenderPresent(renderer);
+      render(map, poly_r);
    }
 
-
-   SDL_DestroyWindow(window);
-   SDL_DestroyRenderer(renderer);
 
    return EXIT_SUCCESS;
 }
