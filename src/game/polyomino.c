@@ -132,9 +132,9 @@ bool collision_test(struct Polyomino poly, struct Map map) {
    int i = 0, j = 0;
    bool collision = false;
    while (i < poly.mat_size && collision == false) {
-      if (poly.pos.x + i < map.max_w) {
+      if (poly.pos.x + i < map.size && poly.pos.x + i >= 0) {
          j = 0;
-         while (j < poly.mat_size && collision == false) {
+         while (j < poly.mat_size && j >= 0 && collision == false) {
             if (poly.pos.y + j < map.max_h && poly.tiles[i][j] != NO_TILE) {
                if (map.tiles[poly.pos.x + i][poly.pos.y + j] != NO_TILE) {
                   collision = true;
@@ -151,8 +151,8 @@ bool collision_test(struct Polyomino poly, struct Map map) {
 void spawn_poly(struct Polyomino* poly, int map_size, enum Direction side) {
    poly->pos.y = map_size / 2;
    if (side == LEFT) {
-      poly->pos.x = -poly->mat_size;
+      poly->pos.x = -poly->mat_size - 18;
    } else {
-      poly->pos.x = map_size + poly->mat_size + 15;
+      poly->pos.x = map_size + 18;
    }
 }

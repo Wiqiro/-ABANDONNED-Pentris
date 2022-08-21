@@ -99,7 +99,6 @@ int detect_square(struct Map* map) {
 
       if (detected == false) {
          for (j = i; j < map->size - i - 1; j++) {
-            //printf("%d %d | %d %d | %d %d | %d %d\n", i, j, map->size - j - 1, i, map->size - i - 1, map->size - j - 1, j, map->size - i - 1);
             map->tiles[i][j] = NO_TILE;
             map->tiles[map->size - j - 1][i] = NO_TILE;
             map->tiles[map->size - i - 1][map->size - j - 1] = NO_TILE;
@@ -146,7 +145,6 @@ bool is_floating(struct Map map, struct Coord pos) {
 
 void tile_fall(struct Map* map, struct Coord pos) {
    struct Vect vect = get_vector_to_center(*map, pos);
-   printf("%d %d \n", vect.x, vect.y);
 
    if (abs(vect.x) == abs(vect.y)) {
       map->tiles[pos.x + abs(vect.x) / vect.x][pos.y + abs(vect.y) / vect.y] = map->tiles[pos.x][pos.y];
@@ -174,8 +172,5 @@ void gravitation(struct Map* map, int dist) {
       tile_fall(map, (struct Coord){map->size - i - 1, map->size - j - 1});
       tile_fall(map, (struct Coord){j, map->size - i - 1});
 
-
-      printf("\n\n");
-      //printf("%d %d | %d %d | %d %d | %d %d\n", i, j, map->size - j - 1, i, map->size - i - 1, map->size - j - 1, j, map->size - i - 1);
    }
 }

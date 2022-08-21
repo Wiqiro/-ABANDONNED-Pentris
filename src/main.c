@@ -6,135 +6,87 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 
-#include "structures.h"
-#include "polyomino.h"
-#include "map.h"
-#include "graphics/ui.h"
-#include "graphics/renderer.h"
+#include "game/structures.h"
+#include "game/polyomino.h"
+#include "game/map.h"
+#include "gui/ui.h"
+#include "gui/renderer.h"
 
-
-#include "testing.h"
-
-struct Keyboard {
-   int S, Z, E, D, SPACE, LEFT, RIGHT;
-};
-
-
+struct UI ui;
 
 int main(int argc, char* argv[]) {
 
-   initialize_ui();
-   SDL_Event event;
-
-   //TTF_Init();
-   /* TTF_Font* test = NULL;
-   TTF_CloseFont(test); */
-
    srand(time(NULL));
+   initialize_ui(&ui);
 
-   struct Keyboard keyboard = {0, 0, 0, 0, 0};
 
    int w = 29, h = 29;
    bool game_over = false;
    int tick = 400;
 
    struct Map map = create_and_initialize_map(w, h);
-   struct Polyomino poly_r = get_test_poly();
+   struct Polyomino poly_r = create_polyomino(), poly_l = create_polyomino();
    FILE* file = fopen("ressources/polynomioes/4-ominoes", "r");
    if (file != NULL) {
       load_poly_from_file(file, &poly_r);
+      load_poly_from_file(file, &poly_l);
    }
+   spawn_poly(&poly_l, map.size, LEFT);
    spawn_poly(&poly_r, map.size, RIGHT);
    
    clock_t timer = clock();
 
    while (game_over == false) {
-
-      while (SDL_PollEvent(&event) != 0) {
-         if (event.type == SDL_QUIT) {
-            game_over = true;
-         } else if (event.type == SDL_KEYDOWN) {
-            switch (event.key.keysym.sym) {
-            case SDLK_s:
-               if (keyboard.S == 0) {
-                  polyomino_fall(&poly_r, map, DOWN);
-                  keyboard.S = 1;
-               }
-               break;
-            case SDLK_z:
-               if (keyboard.Z == 0) {
-                  polyomino_fall(&poly_r, map, UP);
-                  keyboard.Z = 1;  
-               }
-               break;
-            case SDLK_e:
-               if (keyboard.E == 0) {
-                  poly_rotation_cw(&poly_r);
-                  keyboard.E = 1;
-               }
-               break;
-            case SDLK_d:
-               if (keyboard.D == 0) {
-                  poly_rotation_ccw(&poly_r);
-                  keyboard.D = 1;
-               }
-               break;
-            case SDLK_LEFT:
-               if (keyboard.LEFT == 0) {
-                  map_rotation_ccw(&map);
-                  keyboard.LEFT = 1;
-               }
-               break;
-            case SDLK_RIGHT:
-               if (keyboard.RIGHT == 0) {
-                  map_rotation_cw(&map);
-                  keyboard.RIGHT = 1;
-               }
-               break;
-            case SDLK_SPACE:
-               if (keyboard.SPACE == 0) {
-                  tick = 40;
-                  keyboard.SPACE = 1;
-               }
-               break;
-            default:
-               break;
-            }
-         } else if (event.type == SDL_KEYUP) {
-            switch (event.key.keysym.sym) {
-            case SDLK_s:
-               keyboard.S = 0;
-               break;
-            case SDLK_z:
-               keyboard.Z = 0;
-               break;
-            case SDLK_e:
-               keyboard.E = 0;
-               break;
-            case SDLK_d:
-               keyboard.D = 0;
-               break;
-            case SDLK_SPACE:
-               tick = 400;
-               keyboard.SPACE = 0;
-               break;
-            case SDLK_LEFT:
-               keyboard.LEFT = 0;
-               break;
-            case SDLK_RIGHT:
-               keyboard.RIGHT = 0;
-               break;
-            default:
-               break;
-            }
+      
+      handle_events(&ui.window);
+      if (ui.window.action[MAP_ROTATION_CW] == PRESSED) {
+         map_rotation_cw(&map);
+      }
+      if (ui.window.action[MAP_ROTATION_CCW] == PRESSED) {
+         map_rotation_ccw(&map);
+      }
+      if (ui.window.action[POLY_ROTATION_LEFT] == PRESSED) {
+         if (ui.window.action[POLY_INVERT_ROTATION] == NONE) {
+            poly_rotation_cw(&poly_l);
+         } else {
+            poly_rotation_ccw(&poly_l);
          }
       }
+      if (ui.window.action[POLY_ROTATION_RIGHT] == PRESSED) {
+         if (ui.window.action[POLY_INVERT_ROTATION] == NONE) {
+            poly_rotation_cw(&poly_r);
+         } else {
+            poly_rotation_ccw(&poly_r);
+         }
+      }
+      if (ui.window.action[POLY_UP] == PRESSED) {
+         polyomino_fall(&poly_l, map, UP);
+         polyomino_fall(&poly_r, map, UP);
+      }
+      if (ui.window.action[POLY_DOWN] == PRESSED) {
+         polyomino_fall(&poly_l, map, DOWN);
+         polyomino_fall(&poly_r, map, DOWN);
+      }
+      if (ui.window.action[POLY_SPEEDUP] == NONE) {
+         tick = 400;
+      } else {
+         tick = 40;
+      }
+      if (ui.window.action[QUIT] != NONE) {
+         game_over = true;
+      }
+     
 
       if (clock() - timer >= tick) {
          if (polyomino_fall(&poly_r, map, LEFT) == false) {
             merge_poly(&map, poly_r);
-            poly_r = get_test_poly();
             load_poly_from_file(file, &poly_r);
+            spawn_poly(&poly_r, map.size, RIGHT);
+         }
+         if (polyomino_fall(&poly_l, map, RIGHT) == false) {
+            merge_poly(&map, poly_l);
+            load_poly_from_file(file, &poly_l);
+            spawn_poly(&poly_l, map.size, LEFT);
          }
          timer = clock();
          int dist_detected = detect_square(&map);
@@ -145,7 +97,7 @@ int main(int argc, char* argv[]) {
          }
       }
 
-      render(map, poly_r);
+      render(&ui.renderer, map, poly_l, poly_r);
    }
 
 
