@@ -23,8 +23,8 @@ struct Map create_and_initialize_map(int w, int h) {
    map.tiles[w / 2 - 1][h / 2] = BASE;
    map.tiles[w / 2][h / 2 + 1] = BASE;
    map.tiles[w / 2][h / 2 - 1] = BASE;
-   map.max_w = w;
-   map.max_h = h;
+   map.size = w;
+   map.size = h;
    map.size = w;
 
    return map;
@@ -47,17 +47,17 @@ static bool is_rotation_allowed(struct Map* map) {
 
 bool map_rotation_cw(struct Map* map) {
    struct Map tmp;
-   tmp.tiles = (enum Tile**)malloc(sizeof(enum Tile*) * map->max_w);
-   for (int i = 0; i < map->max_w; i++) {
-      tmp.tiles[i] = (enum Tile*)malloc(sizeof(enum Tile) * map->max_h);
-      for (int j = 0; j < map->max_h; j++) {
+   tmp.tiles = (enum Tile**)malloc(sizeof(enum Tile*) * map->size);
+   for (int i = 0; i < map->size; i++) {
+      tmp.tiles[i] = (enum Tile*)malloc(sizeof(enum Tile) * map->size);
+      for (int j = 0; j < map->size; j++) {
          tmp.tiles[i][j] = map->tiles[i][j];
       }
    }
 
-   for (int i = 0; i < map->max_h; i++) {
-      for (int j = 0; j < map->max_h; j++) {
-         map->tiles[i][j] = tmp.tiles[j][map->max_w - 1 - i];
+   for (int i = 0; i < map->size; i++) {
+      for (int j = 0; j < map->size; j++) {
+         map->tiles[i][j] = tmp.tiles[j][map->size - 1 - i];
       }
    }
    return is_rotation_allowed(map);
@@ -65,17 +65,17 @@ bool map_rotation_cw(struct Map* map) {
 
 bool map_rotation_ccw(struct Map* map) {
    struct Map tmp;
-   tmp.tiles = (enum Tile**)malloc(sizeof(enum Tile*) * map->max_w);
-   for (int i = 0; i < map->max_w; i++) {
-      tmp.tiles[i] = (enum Tile*)malloc(sizeof(enum Tile) * map->max_h);
-      for (int j = 0; j < map->max_h; j++) {
+   tmp.tiles = (enum Tile**)malloc(sizeof(enum Tile*) * map->size);
+   for (int i = 0; i < map->size; i++) {
+      tmp.tiles[i] = (enum Tile*)malloc(sizeof(enum Tile) * map->size);
+      for (int j = 0; j < map->size; j++) {
          tmp.tiles[i][j] = map->tiles[i][j];
       }
    }
 
-   for (int i = 0; i < map->max_h; i++) {
-      for (int j = 0; j < map->max_h; j++) {
-         map->tiles[i][j] = tmp.tiles[map->max_w -1- j][i];
+   for (int i = 0; i < map->size; i++) {
+      for (int j = 0; j < map->size; j++) {
+         map->tiles[i][j] = tmp.tiles[map->size -1- j][i];
       }
    }
    return is_rotation_allowed(map);

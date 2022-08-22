@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 #include <SDL.h>
 #include <SDL_image.h>
@@ -25,9 +26,9 @@ struct Renderer {
    SDL_Rect center;
    SDL_Rect right;
 
-   int lines_threshold;
-   int tile_size;
-   int tile_outline;
+   uint8_t lines_threshold;
+   uint8_t tile_size;
+   uint8_t tile_outline;
 };
 
 bool renderer_init(struct Renderer* self, struct SDL_Window* window);

@@ -4,12 +4,7 @@
 //TODO: handle multiple screens
 bool initialize_ui(struct UI* self) {
 
-   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-      return false;
-   }
-   IMG_Init(IMG_INIT_PNG);
-   TTF_Init();
-   SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "2" );
+   
    
    window_init(&self->window);
    renderer_init(&self->renderer, self->window.window);

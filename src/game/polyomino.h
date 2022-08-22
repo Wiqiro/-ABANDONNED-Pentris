@@ -24,6 +24,8 @@ void load_poly_from_file(FILE* file, struct Polyomino* poly);
 
 bool polyomino_fall(struct Polyomino* poly, struct Map map, enum Direction dir);
 
+void invert_poly(struct Polyomino* poly);
+
 void poly_rotation_cw(struct Polyomino* poly);
 
 void poly_rotation_ccw(struct Polyomino* poly);

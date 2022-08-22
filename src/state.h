@@ -1,8 +1,10 @@
+#include "gui/window.h"
+#include "gui/renderer.h"
+#include "game/game.h"
+
 struct State {
    struct Window window;
    struct Renderer renderer;
-   
-   struct Map map;
-   struct Polyomino[4] polys;
+   struct Game game;
 
-}
+};

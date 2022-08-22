@@ -83,10 +83,39 @@ void load_poly_from_file(FILE* file, struct Polyomino* poly) {
          poly->tiles[i][j] = color;
          token = strtok(NULL, "/");
       }
+
+      if (rand()%2 == 1) {
+         invert_poly(poly);
+      }
+      
+      switch (rand()%4) {
+      case 0:
+         poly_rotation_cw(poly);
+         break;
+      case 1:
+         poly_rotation_cw(poly);
+         poly_rotation_cw(poly);
+         break;
+      case 2:
+         poly_rotation_ccw(poly);
+         break;
+      default:
+         break;
+      }
    }
 
 }
 
+
+void invert_poly(struct Polyomino* poly) {
+   for (int i = 0; i < poly->mat_size / 2; i++) {
+      for (int j = 0; j < poly->mat_size; j++) {
+         enum Tile tmp = poly->tiles[i][j];
+         poly->tiles[i][j] = poly->tiles[poly->mat_size - i - 1][j];
+         poly->tiles[poly->mat_size - i - 1][j] = tmp;
+      }
+   }
+}
 
 
 //TODO: implement better rotation algorithm
@@ -135,7 +164,7 @@ bool collision_test(struct Polyomino poly, struct Map map) {
       if (poly.pos.x + i < map.size && poly.pos.x + i >= 0) {
          j = 0;
          while (j < poly.mat_size && j >= 0 && collision == false) {
-            if (poly.pos.y + j < map.max_h && poly.tiles[i][j] != NO_TILE) {
+            if (poly.pos.y + j < map.size && poly.tiles[i][j] != NO_TILE) {
                if (map.tiles[poly.pos.x + i][poly.pos.y + j] != NO_TILE) {
                   collision = true;
                }
@@ -150,8 +179,8 @@ bool collision_test(struct Polyomino poly, struct Map map) {
 
 void spawn_poly(struct Polyomino* poly, int map_size, enum Direction side) {
    poly->pos.y = map_size / 2;
-   if (side == LEFT) {
       poly->pos.x = -poly->mat_size - 18;
+   if (side == LEFT) {
    } else {
       poly->pos.x = map_size + 18;
    }

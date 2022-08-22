@@ -1,6 +1,8 @@
 #ifndef STRUCTURES_H
 #define STRUCTURES_H
 
+#include <stdint.h>
+
 enum Tile {
    RED,
    BLUE,
@@ -16,8 +18,8 @@ enum Tile {
 };
 
 struct Coord {
-   int x;
-   int y;
+   int32_t x;
+   int32_t y;
 };
 
 
@@ -25,15 +27,13 @@ struct Coord {
 struct Polyomino {
    enum Tile** tiles;
    struct Coord pos;
-   int mat_size;
+   int32_t mat_size;
 };
 
 
 struct Map {
    enum Tile** tiles;
    struct Coord centre;
-   int max_w;
-   int max_h;
    int size;
 };
 

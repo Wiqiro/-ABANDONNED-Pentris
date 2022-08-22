@@ -16,10 +16,6 @@ struct UI {
    
    struct Renderer renderer;
    struct Window window; 
-   
-   
-   clock_t tick;
-   clock_t timer;
 };
 
 bool initialize_ui();

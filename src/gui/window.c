@@ -1,6 +1,12 @@
 #include "window.h"
 
 bool window_init(struct Window* self) {
+
+   SDL_Init(SDL_INIT_VIDEO);
+   IMG_Init(IMG_INIT_PNG);
+   TTF_Init();
+   SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "2" );
+
    self->window = SDL_CreateWindow("Pentris²", 0, 60, 1900, 2000, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
    if (self->window != NULL) {
       SDL_SetWindowFullscreen(self->window, SDL_WINDOW_FULLSCREEN_DESKTOP);

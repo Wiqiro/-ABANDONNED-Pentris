@@ -12,9 +12,9 @@ bool renderer_init(struct Renderer* self, struct SDL_Window* window) {
    self->center = (SDL_Rect){525, 210, 870, 870};
    self->right = (SDL_Rect){1395, 210, 525, 870};
 
-   self->lines_threshold = 2;
+   self->lines_threshold = 1;
    self->tile_size = 30;
-   self->tile_outline = 4;
+   self->tile_outline = 2;
 
 
    //TODO:
@@ -24,7 +24,7 @@ bool renderer_init(struct Renderer* self, struct SDL_Window* window) {
 void load_text(struct Renderer* self, char* str, SDL_Color color, SDL_Rect rect) {
    SDL_Surface* surface = TTF_RenderText_Blended(self->font, str, color);
    if (self->font == NULL) {
-      printf("a");
+      //TODO:
    }
    SDL_Texture* texture = NULL;
    if (surface != NULL) {
@@ -126,8 +126,8 @@ void render_map(struct Renderer* self, struct Map map) {
 
    struct Coord tile_pos;
 
-   for (int j = 0; j < map.max_h; j++) {
-      for (int i = 0; i < map.max_w; i++) {
+   for (int j = 0; j < map.size; j++) {
+      for (int i = 0; i < map.size; i++) {
          if (map.tiles[i][j] != NO_TILE) {
             tile_pos = (struct Coord){i * self->tile_size + self->center.x, j * self->tile_size + self->center.y};
             render_tile(self, map.tiles[i][j], tile_pos);
