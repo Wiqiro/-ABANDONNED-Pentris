@@ -3,8 +3,8 @@
 #include <stdbool.h>
 #include <time.h>
 
-#include <SDL.h>
-#include <SDL_ttf.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 
 
 #include "state.h"
@@ -40,8 +40,7 @@ int main(int argc, char* argv[]) {
    spawn_poly(&state.game.poly_l, state.game.map.size, LEFT);
    spawn_poly(&state.game.poly_r, state.game.map.size, RIGHT);
    
-   clock_t timer = clock();
-
+   uint32_t timer = SDL_GetTicks();
    while (game_over == false) {
       
       handle_events(&state.window);
@@ -81,9 +80,9 @@ int main(int argc, char* argv[]) {
       if (state.window.action[QUIT] != NONE) {
          game_over = true;
       }
-     
 
-      if (clock() - timer >= tick) {
+
+      if (SDL_GetTicks() - timer >= tick) {
          if (polyomino_fall(&state.game.poly_r, state.game.map, LEFT) == false) {
             merge_poly(&state.game.map, state.game.poly_r);
             load_poly_from_file(file, &state.game.poly_r);
@@ -94,7 +93,7 @@ int main(int argc, char* argv[]) {
             load_poly_from_file(file, &state.game.poly_l);
             spawn_poly(&state.game.poly_l, state.game.map.size, LEFT);
          }
-         timer = clock();
+         timer = SDL_GetTicks();
          int dist_detected = detect_square(&state.game.map);
          if (dist_detected > 0) {
             for (int i = dist_detected; i < state.game.map.size / 2 ; i++) {

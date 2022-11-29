@@ -7,9 +7,9 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include <SDL.h>
-#include <SDL_image.h>
-#include <SDL_ttf.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 
 #include "../game/structures.h"
 
@@ -32,15 +32,10 @@ struct Renderer {
 };
 
 bool renderer_init(struct Renderer* self, struct SDL_Window* window);
-
 void load_text(struct Renderer* self, char* str, SDL_Color color, SDL_Rect rect);
-
 void render_background(struct Renderer* self, int score);
-
 void render_tile(struct Renderer* self, enum Tile tile, struct Coord pos);
-
 void render_map(struct Renderer* self, struct Map map);
-
 void render_poly(struct Renderer* self, struct Polyomino poly);
 
 #endif

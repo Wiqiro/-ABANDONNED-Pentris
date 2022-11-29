@@ -2,9 +2,9 @@
 
 #include <time.h>
 
-#include <SDL.h>
-#include <SDL_image.h>
-#include <SDL_ttf.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 
 #include "renderer.h"
 #include "window.h"
@@ -19,5 +19,4 @@ struct UI {
 };
 
 bool initialize_ui();
-
 void render(struct Renderer* renderer, struct Map map, struct Polyomino poly_l, struct Polyomino poly_r);
